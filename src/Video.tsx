@@ -2,13 +2,13 @@ import { useCallback, useState, useRef, useEffect } from "react";
 import Webcam from "react-webcam";
 
 const WebcamStreamCapture = () => {
-  const webcamRef = useRef(null);
-  const mediaRecorderRef = useRef<MediaRecorder>(null);
+  const webcamRef = useRef<Webcam>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null); // Add this line
   const [capturing, setCapturing] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
-  const [deviceId, setDeviceId] = useState({});
-  const [devices, setDevices] = useState([]);
-  const [blobToExport, setBlobToExport] = useState<Blob | null>(null);
+//   const [deviceId, setDeviceId] = useState({});
+  const [devices, setDevices] = useState<MediaDevices[]>([]);
+  // const [blobToExport, setBlobToExport] = useState<Blob | null>(null);
 
   const handleDevices = useCallback(
     (mediaDevices: any[]) =>
@@ -20,12 +20,11 @@ const WebcamStreamCapture = () => {
     navigator.mediaDevices.enumerateDevices().then(handleDevices);
   }, [handleDevices]);
 
+
   const handleStartCaptureClick = useCallback(() => {
     setCapturing(true);
-    console.log('*** webcamRef, mediaRecorderRef Line no: [24] ***', webcamRef, mediaRecorderRef);
     if (webcamRef.current) {
-      console.log("***  Line no: [13] ***");
-      mediaRecorderRef.current = new MediaRecorder(webcamRef?.current.stream, {
+      mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream!, {
         mimeType: "video/webm",
       });
       mediaRecorderRef?.current.addEventListener(
@@ -56,11 +55,11 @@ const WebcamStreamCapture = () => {
       const blob = new Blob(recordedChunks, {
         type: "video/webm",
       });
-      setBlobToExport(blob);
+      // setBlobToExport(blob);
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       document.body.appendChild(a);
-      a.style = "display: none";
+      a.setAttribute("style", "display: none");
       a.href = url;
       a.download = "react-webcam-stream-capture.webm";
       a.click();
@@ -72,28 +71,28 @@ const WebcamStreamCapture = () => {
 
 
 
-  const uploadToS3 = () => {
-    const s3 = new AWS.S3({
-      accessKeyId: 'YOUR_ACCESS_KEY_ID',
-      secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
-      region: 'us-east-2',
-    });
+//   const uploadToS3 = () => {
+//     const s3 = new AWS.S3({
+//       accessKeyId: 'YOUR_ACCESS_KEY_ID',
+//       secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
+//       region: 'us-east-2',
+//     });
 
-    const params = {
-      Bucket: 'arn:aws:s3:::video-storage-demonki',
-      Key: 'video.webm',
-      Body: blobToExport,
-      ContentType: 'video/webm',
-    };
+//     const params = {
+//       Bucket: 'arn:aws:s3:::video-storage-demonki',
+//       Key: 'video.webm',
+//       Body: blobToExport,
+//       ContentType: 'video/webm',
+//     };
 
-    s3.upload(params, (err: any, data: any) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log('Video uploaded successfully', data.Location);
-    });
-  };
+//     s3.upload(params, (err: any, data: any) => {
+//       if (err) {
+//         console.error(err);
+//         return;
+//       }
+//       console.log('Video uploaded successfully', data.Location);
+//     });
+//   };
 
 
 
@@ -112,12 +111,12 @@ const WebcamStreamCapture = () => {
         <button onClick={handleDownload}>Download</button>
       )}
 
-       {devices.map((device, key) => (
-          <div key={key} >
-            <Webcam audio={false} videoConstraints={{ deviceId: device.deviceId }} />
-            {device.label || `Device ${key + 1}`}
-          </div>
-                  ))}
+      {devices.map((device, key) => (
+        <div key={key}>
+          <Webcam audio={false} videoConstraints={{ deviceId: (device as unknown as MediaDeviceInfo).deviceId }} />
+          {(device as unknown as MediaDeviceInfo).label || `Device ${key + 1}`}
+        </div>
+      ))}
                   </>
 
   );
