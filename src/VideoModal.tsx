@@ -6,8 +6,6 @@ export const VideoModal = () => {
 
     const [showVideoModal,setShowVideoModal ] = useState(false)
 
-    const localURL = '/videos/webcam-stream-capture6f7737e7-b0dd-4350-941d-fa2acc96434d.webm'
-    const youtubeURL = 'https://www.youtube.com/watch?v=FdB9J5_V3WQ'
 
     return (
         <>
@@ -24,7 +22,7 @@ export const VideoModal = () => {
         width={'80%'}
         >
             <ReactPlayer 
-            url={localURL} 
+            // url={localURL} 
             controls 
             // width="100%" 
             // height="100%" 
