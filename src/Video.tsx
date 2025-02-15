@@ -1,5 +1,6 @@
-import { useCallback, useState, useRef, useEffect } from "react";
-import Webcam from "react-webcam";
+import { useCallback, useState, useRef, useEffect } from "react"
+import { v4 as uuidv4 } from 'uuid'
+import Webcam from "react-webcam"
 
 const WebcamStreamCapture = () => {
   const webcamRef = useRef<Webcam>(null);
@@ -38,7 +39,6 @@ const WebcamStreamCapture = () => {
   const handleDataAvailable = useCallback(
     ({ data }: any) => {
       if (data.size > 0) {
-        console.log("***  Line no: [27] ***");
         setRecordedChunks((prev) => prev.concat(data));
       }
     },
@@ -61,7 +61,7 @@ const WebcamStreamCapture = () => {
       document.body.appendChild(a);
       a.setAttribute("style", "display: none");
       a.href = url;
-      a.download = "react-webcam-stream-capture.webm";
+      a.download = `webcam-stream-capture${uuidv4().slice(0,8)}.webm`;
       a.click();
       window.URL.revokeObjectURL(url);
       setRecordedChunks([]);
@@ -101,7 +101,10 @@ const WebcamStreamCapture = () => {
 
   return (
     <>
-      <Webcam audio={false} ref={webcamRef} />
+      <Webcam 
+      audio={false} 
+      mirrored={true}
+      ref={webcamRef} />
       {capturing ? (
         <button onClick={handleStopCaptureClick}>Stop Capture</button>
       ) : (
@@ -113,7 +116,16 @@ const WebcamStreamCapture = () => {
 
       {devices.map((device, key) => (
         <div key={key}>
-          <Webcam audio={false} videoConstraints={{ deviceId: (device as unknown as MediaDeviceInfo).deviceId }} />
+          <Webcam 
+          audio={false} 
+          videoConstraints={{ 
+            deviceId: (device as unknown as MediaDeviceInfo).deviceId
+          }} 
+          // videoConstraints={{
+          //   facingMode: "user", // Use the front camera (you can also set to "environment" for the rear camera)
+          // }}
+          mirrored={true} // Set mirror to false to avoid the mirrored effect
+          />
           {(device as unknown as MediaDeviceInfo).label || `Device ${key + 1}`}
         </div>
       ))}
