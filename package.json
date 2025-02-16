@@ -12,11 +12,15 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "antd": "^5.23.0",
+    "crypto-browserify": "^3.12.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-player": "^2.16.0",
     "react-webcam": "^7.2.0",
+    "stream-browserify": "^3.0.0",
     "uuid": "^11.0.5"
   },
   "devDependencies": {
