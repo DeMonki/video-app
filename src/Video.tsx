@@ -101,10 +101,11 @@ const WebcamStreamCapture = () => {
 
   return (
     <>
-      <Webcam 
+      {/* <Webcam 
       audio={false} 
       mirrored={true}
-      ref={webcamRef} />
+      // ref={webcamRef} 
+      /> */}
       {capturing ? (
         <button onClick={handleStopCaptureClick}>Stop Capture</button>
       ) : (
@@ -125,7 +126,9 @@ const WebcamStreamCapture = () => {
           //   facingMode: "user", // Use the front camera (you can also set to "environment" for the rear camera)
           // }}
           mirrored={true} // Set mirror to false to avoid the mirrored effect
+          ref={webcamRef} 
           />
+          
           {(device as unknown as MediaDeviceInfo).label || `Device ${key + 1}`}
         </div>
       ))}
