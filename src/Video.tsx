@@ -1,5 +1,5 @@
 import { useCallback, useState, useRef, useEffect } from "react"
-import { v4 as uuidv4 } from 'uuid'
+// import { v4 as uuidv4 } from 'uuid'
 import Webcam from "react-webcam"
 
 const WebcamStreamCapture = () => {
@@ -61,7 +61,8 @@ const WebcamStreamCapture = () => {
       document.body.appendChild(a);
       a.setAttribute("style", "display: none");
       a.href = url;
-      a.download = `webcam-stream-capture${uuidv4().slice(0,8)}.webm`;
+      a.download = `webcam-stream-capture.webm`;
+      // a.download = `webcam-stream-capture${uuidv4().slice(0,8)}.webm`;
       a.click();
       window.URL.revokeObjectURL(url);
       setRecordedChunks([]);
